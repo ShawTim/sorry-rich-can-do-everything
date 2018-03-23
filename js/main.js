@@ -1,32 +1,28 @@
-import html2canvas from "html2canvas";
 import images from "./images";
+import ProgressBar from "progressbar.js";
 
-let time;
+let progressbar;
 
-const renderCanvas = (canvas) => {
-
-  canvas.className = "frame-0001";
-
-  if (time) {
-    clearInterval(time);
-  }
-
-  let index = 2;
-  time = setInterval(() => {
-    canvas.className = "frame-" + `${(index % 208) || 208}`.padStart(4, "0");
-    index++;
-  }, 100);
+const renderProgressBar = (container) => {
+  container.classList.add("converting");
+  progressbar = new ProgressBar.SemiCircle(container, {
+    strokeWidth: 3,
+    color: "black",
+    trailColor: "#eee",
+    trailWidth: 1,
+    svgStyle: null,
+    color: "black",
+    text: {
+      value: "0%",
+      alignToBottom: false
+    },
+  });
 };
 
-const initCanvas = (container) => {
-  for (let i=1; i<=208; i++) {
-    const canvas = document.createElement("canvas");
-    canvas.setAttribute("id", `canvas_${i}`);
-    canvas.classList.add("frame-" + `${i}`.padStart(4, "0"));
-    const context = canvas.getContext("2d");
-    context.fillStyle = "red";
-    context.fillRect(0, 0, 570, 320);
-    container.appendChild(canvas);
+const setProgressBar = (progress) => {
+  if (progressbar) {
+    progressbar.set(progress);
+    progressbar.setText(`${parseInt(progress*100)}%`);
   }
 };
 
@@ -78,15 +74,16 @@ const convertGif = (encoder, container) => {
   encoder.setRepeat(0);
   encoder.setDelay(100);
   encoder.setSize(570, 320);
+  encoder.setQuality(20);
   encoder.start();
 
   let index = 0;
 
   const addFrame = (callback) => {
-    console.log(index);
     const img = new Image();
     img.src = images[index++];
     img.onload = () => {
+      setProgressBar(index/images.length);
       context.clearRect(0, 0, canvas.width, canvas.height);
       context.drawImage(img, 0, 0, canvas.width, canvas.height);
       fillSubtitle(context, getSubtitle(index));
@@ -103,6 +100,7 @@ const convertGif = (encoder, container) => {
 
       const img = document.createElement("img");
       img.setAttribute("src", `data:image/gif;base64,${btoa(encoder.stream().getData())}`);
+      container.classList.remove("converting");
       container.innerHTML = "";
       container.appendChild(img);
     }
@@ -114,5 +112,8 @@ const convertGif = (encoder, container) => {
 document.addEventListener("DOMContentLoaded", (e) => {
   const container = document.getElementById("image-container");
   const btn = document.getElementById("render-button");
-  btn.addEventListener("click", (e) => convertGif(new GIFEncoder(), container));
+  btn.addEventListener("click", (e) => {
+    renderProgressBar(container);
+    convertGif(new GIFEncoder(), container);
+  });
 });

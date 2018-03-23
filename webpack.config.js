@@ -17,6 +17,7 @@ module.exports = {
       { from: './js/GIFEncoder.js' },
       { from: './images/*.jpg' },
       { from: './images/*.png' },
+      { from: './images/*.gif' },
     ])
   ],
   module: {
