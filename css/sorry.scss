@@ -28,7 +28,12 @@ canvas {
 
   div.progressbar-text {
     font-size: 4em;
+    text-shadow: 0 0 3px black;
     top: 0!important;
+  }
+
+  svg {
+    filter: drop-shadow(0 0 3px black);
   }
 }
 

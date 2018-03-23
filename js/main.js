@@ -1,7 +1,10 @@
 import images from "./images";
+import FileSaver from "file-saver";
 import ProgressBar from "progressbar.js";
 
 let progressbar;
+let blob;
+let blobURL;
 
 const renderProgressBar = (container) => {
   container.classList.add("converting");
@@ -64,7 +67,7 @@ const fillSubtitle = (context, subtitle) => {
   }
 };
 
-const convertGif = (encoder, container) => {
+const convertGif = (encoder, container, renderBtn, downloadBtn) => {
   
   const canvas = document.createElement("canvas");
   canvas.setAttribute("width", 570);
@@ -101,10 +104,23 @@ const convertGif = (encoder, container) => {
       const img = document.createElement("img");
       //img.setAttribute("src", `data:image/gif;base64,${btoa(encoder.stream().getData())}`);
       const data = new Uint8Array(encoder.stream().bin);
-      img.setAttribute("src", URL.createObjectURL(new Blob([data], { type: "images/gif" })));
+      blob = new Blob([data], { type: "image/gif" });
+      blobURL && window.URL.revokeObjectURL(blobURL);
+      blobURL = URL.createObjectURL(blob);
+
+      /* debug use
+      const span = document.createElement("span");
+      span.innerHTML = blobURL;
+      document.body.appendChild(span);
+      */
+
+      img.setAttribute("src", blobURL);
       container.classList.remove("converting");
       container.innerHTML = "";
       container.appendChild(img);
+
+      renderBtn.disabled = false;
+      downloadBtn.disabled = false;
     }
   }
 
@@ -113,9 +129,18 @@ const convertGif = (encoder, container) => {
 
 document.addEventListener("DOMContentLoaded", (e) => {
   const container = document.getElementById("image-container");
-  const btn = document.getElementById("render-button");
-  btn.addEventListener("click", (e) => {
+  const renderBtn = document.getElementById("render-button");
+  const downloadBtn = document.getElementById("download-button");
+  downloadBtn.disabled = true;
+
+  renderBtn.addEventListener("click", (e) => {
+    renderBtn.disabled = true;
     renderProgressBar(container);
-    convertGif(new GIFEncoder(), container);
+    convertGif(new GIFEncoder(), container, renderBtn, downloadBtn);
+  });
+  downloadBtn.addEventListener("click", (e) => {
+    if (!!blob) {
+      FileSaver.saveAs(blob, "sorry.gif");
+    }
   });
 });
