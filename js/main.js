@@ -99,7 +99,9 @@ const convertGif = (encoder, container) => {
       encoder.finish();
 
       const img = document.createElement("img");
-      img.setAttribute("src", `data:image/gif;base64,${btoa(encoder.stream().getData())}`);
+      //img.setAttribute("src", `data:image/gif;base64,${btoa(encoder.stream().getData())}`);
+      const data = new Uint8Array(encoder.stream().bin);
+      img.setAttribute("src", URL.createObjectURL(new Blob([data], { type: "images/gif" })));
       container.classList.remove("converting");
       container.innerHTML = "";
       container.appendChild(img);
