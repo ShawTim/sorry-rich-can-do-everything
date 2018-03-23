@@ -1,5 +1,5 @@
 {
-  "name": "sorry-i-am-rich",
+  "name": "sorry-rich-can-do-everything",
   "version": "1.0.0",
   "scripts": {
     "build": "webpack -p",
@@ -7,14 +7,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ShawTim/sorry-i-am-rich.git"
+    "url": "git+https://github.com/ShawTim/sorry-rich-can-do-everything.git"
   },
   "author": "ShawTim",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ShawTim/sorry-i-am-rich/issues"
+    "url": "https://github.com/ShawTim/sorry-rich-can-do-everything/issues"
   },
-  "homepage": "https://github.com/ShawTim/sorry-i-am-rich#readme",
+  "homepage": "https://github.com/ShawTim/sorry-rich-can-do-everything#readme",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",

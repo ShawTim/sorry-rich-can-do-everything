@@ -14,12 +14,15 @@ canvas {
 #image-container {
   width: 570px;
   height: 320px;
-  max-width: 570px;
-  max-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   img {
     position: absolute;
     z-index: -1;
+    width: 570px;
+    height: 320px;
   }
 
   &.converting img {
@@ -37,8 +40,9 @@ canvas {
   }
 }
 
-.subtitle-container {
-  margin: 20px;
+.subtitle-container,
+.options-container {
+  margin-top: 20px;
   padding: 20px;
   border: solid 3px;
   border-radius: 30px;
@@ -50,6 +54,8 @@ canvas {
 }
 
 .convert-button {
+  margin-top: 20px;
+
   button {
     font-size: 1.5em;
   }

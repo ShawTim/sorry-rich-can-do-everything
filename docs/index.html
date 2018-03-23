@@ -2,7 +2,7 @@
   <head>
     <title>Sorry有錢真係可以為所欲為生成器</title>
     <meta charset="utf8">
-    <link rel="shortcut icon" href="./images/itdog03.png">
+    <link rel="shortcut icon" href="./images/favicon.ico">
     <script type="text/javascript" src="./LZWEncoder.js"></script>
     <script type="text/javascript" src="./NeuQuant.js"></script>
     <script type="text/javascript" src="./GIFEncoder.js"></script>
@@ -38,9 +38,27 @@
       <div><label for="subtitle08">鄭子誠第八句</label><input id="subtitle08" type="text" placeholder="以後叫佢日日整電腦" /></div>
       <div><label for="subtitle09">梁健平第九句</label><input id="subtitle09" type="text" placeholder="日日整 日日整" /></div>
     </div>
+    <div class="options-container">
+      <div>
+        <span>流暢度(影響檔案大小)</span>
+        <input type="radio" name="rate" id="high-rate" value="1"/>
+        <label for="high-rate">正常</label>
+        <input type="radio" name="rate" id="low-rate" value="2"/>
+        <label for="low-rate">低</label>
+      </div>
+      <div>
+        <span>圖片大小(影響檔案大小)</span>
+        <input type="radio" name="scale" id="scale-100" value="1"/>
+        <label for="scale-100">100%</label>
+        <input type="radio" name="scale" id="scale-70" value="0.7"/>
+        <label for="scale-70">70%</label>
+        <input type="radio" name="scale" id="scale-50" value="0.5"/>
+        <label for="scale-50">50%</label>
+      </div>
+    </div>
     <div class="convert-button">
       <button id="render-button">生成</button>
-      <button id="download-button" disabled>下載</button>
+      <button id="download-button">下載</button>
     </div>
   </body>
 </html>

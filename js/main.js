@@ -50,33 +50,33 @@ const getSubtitle = (index) => {
   }
 };
 
-const fillSubtitle = (context, subtitle) => {
+const fillSubtitle = (context, subtitle, scale) => {
   if (!!subtitle) {
-    context.font = "28px Arial";
+    context.font = `${28*scale}px Arial`;
     context.textAlign = "center";
     context.shadowColor = "black";
     context.shadowOffsetX = 0;
     context.shadowOffsetY = 0;
-    context.shadowBlur = 2;
-    context.lineWidth = 3;
+    context.shadowBlur = 2 * scale;
+    context.lineWidth = 3 * scale;
     context.fillStyle = "black";
-    context.strokeText(subtitle, 285, 300);
+    context.strokeText(subtitle, 570 * scale / 2, 300 * scale);
     context.fillStyle = "#d4d4d4";
     context.shadowBlur = 0;
-    context.fillText(subtitle, 285, 300);
+    context.fillText(subtitle, 570 * scale / 2, 300 * scale);
   }
 };
 
-const convertGif = (encoder, container, renderBtn, downloadBtn) => {
+const convertGif = (encoder, container, rate, scale, renderBtn, downloadBtn) => {
   
   const canvas = document.createElement("canvas");
-  canvas.setAttribute("width", 570);
-  canvas.setAttribute("height", 320);
+  canvas.setAttribute("width", 570 * scale);
+  canvas.setAttribute("height", 320 * scale);
   const context = canvas.getContext("2d");
 
   encoder.setRepeat(0);
-  encoder.setDelay(100);
-  encoder.setSize(570, 320);
+  encoder.setDelay(100 * rate);
+  encoder.setSize(570 * scale, 320 * scale);
   encoder.setQuality(20);
   encoder.start();
 
@@ -84,12 +84,13 @@ const convertGif = (encoder, container, renderBtn, downloadBtn) => {
 
   const addFrame = (callback) => {
     const img = new Image();
-    img.src = images[index++];
+    img.src = images[index];
+    index += rate;
     img.onload = () => {
       setProgressBar(index/images.length);
       context.clearRect(0, 0, canvas.width, canvas.height);
       context.drawImage(img, 0, 0, canvas.width, canvas.height);
-      fillSubtitle(context, getSubtitle(index));
+      fillSubtitle(context, getSubtitle(index), scale);
       encoder.addFrame(context);
       callback();
     };
@@ -131,12 +132,19 @@ document.addEventListener("DOMContentLoaded", (e) => {
   const container = document.getElementById("image-container");
   const renderBtn = document.getElementById("render-button");
   const downloadBtn = document.getElementById("download-button");
+  const highRateInput = document.getElementById("high-rate");
+  const scale100Input = document.getElementById("scale-100");
+
   downloadBtn.disabled = true;
+  highRateInput.checked = true;
+  scale100Input.checked = true;
 
   renderBtn.addEventListener("click", (e) => {
+    const rateInput = document.querySelector(".options-container input[name=rate]:checked");
+    const scaleInput = document.querySelector(".options-container input[name=scale]:checked");
     renderBtn.disabled = true;
     renderProgressBar(container);
-    convertGif(new GIFEncoder(), container, renderBtn, downloadBtn);
+    convertGif(new GIFEncoder(), container, (rateInput.value || 1)-0, (scaleInput.value || 1)-0, renderBtn, downloadBtn);
   });
   downloadBtn.addEventListener("click", (e) => {
     if (!!blob) {
