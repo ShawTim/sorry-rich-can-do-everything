@@ -103,19 +103,15 @@ const convertGif = (encoder, container, rate, scale, renderBtn, downloadBtn) => 
       encoder.finish();
 
       const img = document.createElement("img");
+      // some browser does not support base64 encoded images with large size - at least it doesnt work on my ipad
       //img.setAttribute("src", `data:image/gif;base64,${btoa(encoder.stream().getData())}`);
       const data = new Uint8Array(encoder.stream().bin);
       blob = new Blob([data], { type: "image/gif" });
       blobURL && window.URL.revokeObjectURL(blobURL);
       blobURL = URL.createObjectURL(blob);
 
-      /* debug use
-      const span = document.createElement("span");
-      span.innerHTML = blobURL;
-      document.body.appendChild(span);
-      */
-
       img.setAttribute("src", blobURL);
+      img.setAttribute("alt", "瀏覽器不支援此圖片檔案大小，請調整運算設定");
       container.classList.remove("converting");
       container.innerHTML = "";
       container.appendChild(img);
@@ -128,17 +124,36 @@ const convertGif = (encoder, container, rate, scale, renderBtn, downloadBtn) => 
   addFrame(checkFinish);
 };
 
+const estimateSize = () => {
+  const rateInput = document.querySelector(".options-container input[name=rate]:checked");
+  const scaleInput = document.querySelector(".options-container input[name=scale]:checked");
+  const fileSizeInput = document.getElementById("file-size");
+
+  const rate = (rateInput.value || 1)-0;
+  const scale = scaleInput.value || "1";
+  const base = scale === "1" ? 19 : (scale === "0.7" ? 10.7 : (scale === "0.5" ? 6.3 : 0));
+
+  const filesize = parseInt(base*10 / rate) / 10;
+  fileSizeInput.value = `~${filesize}MB`;
+};
+
 document.addEventListener("DOMContentLoaded", (e) => {
   const container = document.getElementById("image-container");
   const renderBtn = document.getElementById("render-button");
   const downloadBtn = document.getElementById("download-button");
+  const rateInputs = document.querySelectorAll(".options-container input[name=rate]");
+  const scaleInputs = document.querySelectorAll(".options-container input[name=scale]");
   const highRateInput = document.getElementById("high-rate");
-  const scale100Input = document.getElementById("scale-100");
+  const scale70Input = document.getElementById("scale-70");
 
   downloadBtn.disabled = true;
   highRateInput.checked = true;
-  scale100Input.checked = true;
+  scale70Input.checked = true;
 
+  estimateSize();
+
+  [...rateInputs].forEach((input) => input.addEventListener("change", estimateSize));
+  [...scaleInputs].forEach((input) => input.addEventListener("change", estimateSize));
   renderBtn.addEventListener("click", (e) => {
     const rateInput = document.querySelector(".options-container input[name=rate]:checked");
     const scaleInput = document.querySelector(".options-container input[name=scale]:checked");

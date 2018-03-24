@@ -40,14 +40,14 @@
     </div>
     <div class="options-container">
       <div>
-        <span>流暢度(影響檔案大小)</span>
+        <span>流暢度</span>
         <input type="radio" name="rate" id="high-rate" value="1"/>
         <label for="high-rate">正常</label>
         <input type="radio" name="rate" id="low-rate" value="2"/>
         <label for="low-rate">低</label>
       </div>
       <div>
-        <span>圖片大小(影響檔案大小)</span>
+        <span>圖片大小</span>
         <input type="radio" name="scale" id="scale-100" value="1"/>
         <label for="scale-100">100%</label>
         <input type="radio" name="scale" id="scale-70" value="0.7"/>
@@ -55,10 +55,20 @@
         <input type="radio" name="scale" id="scale-50" value="0.5"/>
         <label for="scale-50">50%</label>
       </div>
+      <div class="info">
+        <label for="file-size">預計檔案大小︰</label>
+        <input type="text" id="file-size" value="" readonly />
+      </div>
+      <div class="info">
+        <span class="warning-text">*請衡量使用設備及瀏覽器運算強度作調整</span>
+      </div>
     </div>
     <div class="convert-button">
       <button id="render-button">生成</button>
       <button id="download-button">下載</button>
+    </div>
+    <div class="footer">
+      Created by <a href="https://github.com/ShawTim">ShawTim</a>.
     </div>
   </body>
 </html>
