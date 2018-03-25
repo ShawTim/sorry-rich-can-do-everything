@@ -27,7 +27,7 @@
     <div id="image-container">
       <img src="./images/default.gif" />
     </div>
-    <div class="subtitle-container">
+    <div class="subtitle-container" title="在此欄可以加入角色對白">
       <div><label for="subtitle01">鄭子誠第一句</label><input id="subtitle01" type="text" placeholder="好啊" /></div>
       <div><label for="subtitle02">鄭子誠第二句</label><input id="subtitle02" type="text" placeholder="就算你係天才developer" /></div>
       <div><label for="subtitle03">鄭子誠第三句</label><input id="subtitle03" type="text" placeholder="就算你有幾多年IT經驗" /></div>
@@ -38,7 +38,30 @@
       <div><label for="subtitle08">鄭子誠第八句</label><input id="subtitle08" type="text" placeholder="以後叫佢日日整電腦" /></div>
       <div><label for="subtitle09">梁健平第九句</label><input id="subtitle09" type="text" placeholder="日日整 日日整" /></div>
     </div>
-    <div class="options-container">
+    <div class="avatar-container" title="在此欄可以上傳角色頭像">
+      <div>
+        <label for="avatar-lai">
+          <span>黎諾懿頭像</span>
+          <img src="./images/lai.png" data-src="./images/lai.png" />
+        </label>
+        <input id="avatar-lai" type="file" />
+      </div>
+      <div>
+        <label for="avatar-cheng">
+          <span>鄭子誠頭像</span>
+          <img src="./images/cheng.png" data-src="./images/cheng.png" />
+        </label>
+        <input id="avatar-cheng" type="file" />
+      </div>
+      <div>
+        <label for="avatar-leung">
+          <span>梁健平頭像</span>
+          <img src="./images/leung.png" data-src="./images/leung.png" />
+        </label>
+        <input id="avatar-leung" type="file" />
+      </div>
+    </div>
+    <div class="options-container" title="在此欄可以調整生成設定">
       <div>
         <span>流暢度</span>
         <input type="radio" name="rate" id="high-rate" value="1"/>
@@ -68,7 +91,8 @@
       <button id="download-button">下載</button>
     </div>
     <div class="footer">
-      Created by <a href="https://github.com/ShawTim">ShawTim</a>.
+      <a href="https://github.com/ShawTim/sorry-rich-can-do-everything" target="_blank"><img src="./images/github.png"/></a>
+      <span>Created by <a href="https://github.com/ShawTim" target="_blank">ShawTim</a>.</span>
     </div>
   </body>
 </html>

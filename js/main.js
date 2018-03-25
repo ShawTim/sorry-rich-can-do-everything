@@ -1,10 +1,13 @@
 import images from "./images";
+import positions from "./avatar-position";
+import tippy from 'tippy.js';
 import FileSaver from "file-saver";
 import ProgressBar from "progressbar.js";
 
 let progressbar;
 let blob;
 let blobURL;
+let avatar = {};
 
 const renderProgressBar = (container) => {
   container.classList.add("converting");
@@ -67,6 +70,83 @@ const fillSubtitle = (context, subtitle, scale) => {
   }
 };
 
+const fillImage = (context, image, scale, posX, posY, deg, width, height) => {
+  const rad = deg * Math.PI/180;
+  const x = posX * scale;
+  const y = posY * scale;
+  const originX = width * scale / 2;
+  const originY = height * scale / 2;
+  context.save();
+  context.translate(x+originX, y+originY);
+  context.rotate(rad);
+  context.translate(-originX, -originY);
+  context.drawImage(image, 0, 0, width * scale, height * scale);
+  context.restore();
+};
+
+const fillLaiAvatar = (context, index, scale) => {
+  const position = positions["avatar-lai"];
+  return new Promise((resolve) => {
+    if (!avatar["avatar-lai"]) {
+      resolve();
+    } else if (!position[index]) {
+      resolve();
+    } else if ((index < 116) || (index >= 130 && index < 163) || (index >= 177)) {
+      resolve();
+    } else {
+      const [x, y, deg] = position[index];
+      const img = new Image();
+      img.src = avatar["avatar-lai"];
+      img.onload = () => {
+        fillImage(context, img, scale, x, y, deg, 300, 300);
+        resolve();
+      };
+    }
+  });
+};
+
+const fillChengAvatar = (context, index, scale) => {
+  const position = positions["avatar-cheng"];
+  return new Promise((resolve) => {
+    if (!avatar["avatar-cheng"]) {
+      resolve();
+    } else if (!position[index]) {
+      resolve();
+    } else if ((index >= 116 && index < 130) || (index >= 163 && index < 177)) {
+      resolve();
+    } else {
+      const [x, y, deg] = position[index];
+      const img = new Image();
+      img.src = avatar["avatar-cheng"];
+      img.onload = () => {
+        fillImage(context, img, scale, x, y, deg, 225, 225);
+        resolve();
+      };
+    }
+  });
+};
+
+const fillLeungAvatar = (context, index, scale) => {
+  const position = positions["avatar-leung"];
+  return new Promise((resolve) => {
+    if (!avatar["avatar-leung"]) {
+      resolve();
+    } else if (!position[index]) {
+      resolve();
+    } else if ((index >= 116 && index < 130) || (index >= 163 && index < 177)) {
+      resolve();
+    } else {
+      const [x, y, deg] = position[index];
+      const img = new Image();
+      img.src = avatar["avatar-leung"];
+      img.onload = () => {
+        fillImage(context, img, scale, x, y, deg, 200, 200);
+        resolve();
+      };
+    }
+  });
+};
+
 const convertGif = (encoder, container, rate, scale, renderBtn, downloadBtn) => {
   
   const canvas = document.createElement("canvas");
@@ -85,14 +165,20 @@ const convertGif = (encoder, container, rate, scale, renderBtn, downloadBtn) => 
   const addFrame = (callback) => {
     const img = new Image();
     img.src = images[index];
-    index += rate;
     img.onload = () => {
       setProgressBar(index/images.length);
       context.clearRect(0, 0, canvas.width, canvas.height);
       context.drawImage(img, 0, 0, canvas.width, canvas.height);
-      fillSubtitle(context, getSubtitle(index), scale);
-      encoder.addFrame(context);
-      callback();
+      fillLaiAvatar(context, index, scale).then(() => {
+        fillLeungAvatar(context, index, scale).then(() => {
+          fillChengAvatar(context, index, scale).then(() => {
+            fillSubtitle(context, getSubtitle(index), scale);
+            encoder.addFrame(context);
+            index += rate;
+            callback();
+          });
+        });
+      });
     };
   };
 
@@ -103,7 +189,9 @@ const convertGif = (encoder, container, rate, scale, renderBtn, downloadBtn) => 
       encoder.finish();
 
       const img = document.createElement("img");
-      // some browser does not support base64 encoded images with large size - at least it doesnt work on my ipad
+      // TODO:
+      // some browser does not support base64 encoded images with large size.
+      // ... at least it doesnt work on my ipad
       //img.setAttribute("src", `data:image/gif;base64,${btoa(encoder.stream().getData())}`);
       const data = new Uint8Array(encoder.stream().bin);
       blob = new Blob([data], { type: "image/gif" });
@@ -141,6 +229,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
   const container = document.getElementById("image-container");
   const renderBtn = document.getElementById("render-button");
   const downloadBtn = document.getElementById("download-button");
+  const avatarInputs = document.querySelectorAll(".avatar-container input[type=file]");
   const rateInputs = document.querySelectorAll(".options-container input[name=rate]");
   const scaleInputs = document.querySelectorAll(".options-container input[name=scale]");
   const highRateInput = document.getElementById("high-rate");
@@ -154,6 +243,23 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
   [...rateInputs].forEach((input) => input.addEventListener("change", estimateSize));
   [...scaleInputs].forEach((input) => input.addEventListener("change", estimateSize));
+  [...avatarInputs].forEach((input) => input.addEventListener("change", (e) => {
+    try {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = ((f) => {
+        const id = e.target.id;
+        const img = document.querySelector(`label[for=${id}] img`);
+        return (e) => {
+          img.setAttribute("src", e.target.result);
+          avatar[id] = e.target.result;
+        };
+      })(file);
+      reader.readAsDataURL(file);
+    } catch (e) {
+      console.error(e);
+    }
+  }));
   renderBtn.addEventListener("click", (e) => {
     const rateInput = document.querySelector(".options-container input[name=rate]:checked");
     const scaleInput = document.querySelector(".options-container input[name=scale]:checked");
@@ -165,5 +271,12 @@ document.addEventListener("DOMContentLoaded", (e) => {
     if (!!blob) {
       FileSaver.saveAs(blob, "sorry.gif");
     }
+  });
+
+  tippy(".subtitle-container, .avatar-container, .options-container", {
+    placement: "left",
+    arrow: true,
+    size: "small",
+    distance: 20,
   });
 });

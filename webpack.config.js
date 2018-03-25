@@ -16,6 +16,7 @@ module.exports = {
       { from: './js/NeuQuant.js' },
       { from: './js/GIFEncoder.js' },
       { from: './images/*.jpg' },
+      { from: './images/*.png' },
       { from: './images/*.ico' },
       { from: './images/*.gif' },
     ])

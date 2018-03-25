@@ -41,6 +41,7 @@ canvas {
 }
 
 .subtitle-container,
+.avatar-container,
 .options-container {
   margin-top: 20px;
   padding: 20px;
@@ -50,6 +51,26 @@ canvas {
 
   label, input {
     margin: 3px;
+  }
+}
+
+.avatar-container {
+  display: flex;
+  align-items: center;
+
+  input[type=file] {
+    display: none;
+  }
+
+  label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  img {
+    width: 100px;
+    height: 100px;
   }
 }
 
@@ -83,6 +104,17 @@ canvas {
 }
 
 .footer {
-  margin-top: 20px;
+  margin-top: 40px;
   font-size: 12px;
+  display: flex;
+  align-items: center;
+
+  img {
+    width: 32px;
+    height: 32px;
+  }
+
+  span {
+    margin-left: 10px;
+  }
 }
