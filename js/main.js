@@ -232,6 +232,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
   const avatarInputs = document.querySelectorAll(".avatar-container input[type=file]");
   const rateInputs = document.querySelectorAll(".options-container input[name=rate]");
   const scaleInputs = document.querySelectorAll(".options-container input[name=scale]");
+  const resetBtns = document.querySelectorAll(".avatar-container button");
   const highRateInput = document.getElementById("high-rate");
   const scale70Input = document.getElementById("scale-70");
 
@@ -260,6 +261,13 @@ document.addEventListener("DOMContentLoaded", (e) => {
       console.error(e);
     }
   }));
+  [...resetBtns].forEach((btn) => btn.addEventListener("click", (e) => {
+    const id = e.target.getAttribute("for-id");
+    const img = document.querySelector(`label[for=${id}] img`);
+    img.setAttribute("src", img.getAttribute("data-src"));
+    avatar[id] = null;
+  }));
+
   renderBtn.addEventListener("click", (e) => {
     const rateInput = document.querySelector(".options-container input[name=rate]:checked");
     const scaleInput = document.querySelector(".options-container input[name=scale]:checked");
