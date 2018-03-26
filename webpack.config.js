@@ -19,6 +19,7 @@ module.exports = {
       { from: './images/*.png' },
       { from: './images/*.ico' },
       { from: './images/*.gif' },
+      { from: './examples/*.gif' },
     ])
   ],
   module: {
