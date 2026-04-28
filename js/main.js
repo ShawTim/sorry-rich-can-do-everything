@@ -1,7 +1,6 @@
 import images from "./images";
 import positions from "./avatar-position";
-import tippy from 'tippy.js';
-import FileSaver from "file-saver";
+import { saveAs } from "file-saver";
 import ProgressBar from "progressbar.js";
 
 let progressbar;
@@ -277,14 +276,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
   });
   downloadBtn.addEventListener("click", (e) => {
     if (!!blob) {
-      FileSaver.saveAs(blob, "sorry.gif");
+      saveAs(blob, "sorry.gif");
     }
-  });
-
-  tippy(".subtitle-container, .avatar-container, .options-container", {
-    placement: "left",
-    arrow: true,
-    size: "small",
-    distance: 20,
   });
 });

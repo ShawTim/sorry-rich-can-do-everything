@@ -1,45 +1,33 @@
-const webpack = require('webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require("path");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-  entry: './js/app.js',
+  entry: "./js/app.js",
   output: {
-    path: __dirname + '/docs',
-    filename: 'bundle.min.js'
+    path: path.resolve(__dirname, "docs"),
+    filename: "bundle.min.js",
+    clean: true
   },
   plugins: [
-    new CopyWebpackPlugin([
-      { from: '*.html' },
-      { from: '*.png' },
-      { from: '*.jpg' },
-      { from: './js/LZWEncoder.js' },
-      { from: './js/NeuQuant.js' },
-      { from: './js/GIFEncoder.js' },
-      { from: './images/*.jpg' },
-      { from: './images/*.png' },
-      { from: './images/*.ico' },
-      { from: './images/*.gif' },
-      { from: './examples/*.gif' },
-    ])
+    new CopyPlugin({
+      patterns: [
+        { from: "*.html" },
+        { from: "*.png", noErrorOnMissing: true },
+        { from: "*.jpg", noErrorOnMissing: true },
+        { from: "js/LZWEncoder.js" },
+        { from: "js/NeuQuant.js" },
+        { from: "js/GIFEncoder.js" },
+        { from: "images", to: "images" },
+        { from: "examples", to: "examples" }
+      ]
+    })
   ],
   module: {
-    loaders: [{
-      test: /\.(s)*css$/,
-      loaders: [
-        'style-loader',
-        'css-loader',
-        'sass-loader'
-      ]
-    }, {
-      test: /\.(jpg|png)$/,
-      loaders: [
-        'url-loader'
-      ]
-    }, {
-      test: /\.js$/,
-      loaders: [
-        'babel-loader?presets[]=es2015'
-      ]
-    }]
+    rules: [
+      {
+        test: /\.(s)*css$/,
+        use: ["style-loader", "css-loader", "sass-loader"]
+      }
+    ]
   }
-}
+};
